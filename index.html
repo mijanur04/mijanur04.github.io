@@ -18,7 +18,6 @@
 }
 
 body {
-    background: linear-gradient(135deg, #0a2f1f 0%, #0d4a32 40%, #145a3a 70%, #1a6b42 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -27,47 +26,121 @@ body {
     color: white;
     position: relative;
     overflow-x: hidden;
+    background: transparent;
+    perspective: 1000px; 
 }
 
-body::before {
-    content: '';
+/* SMOOTH COLOR CHANGE SYSTEM: Two overlapping layers */
+.bg-layer {
     position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(34, 197, 94, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 50% 50%, rgba(5, 150, 105, 0.08) 0%, transparent 70%);
-    animation: ambientMove 20s ease-in-out infinite;
-    pointer-events: none;
-    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    transition: opacity 3s ease; 
 }
 
-@keyframes ambientMove {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    50% { transform: translate(-1%, 3%) rotate(-1deg); }
+#bg-layer-1 {
+    background: linear-gradient(135deg, #0a2f1f 0%, #145a3a 100%); /* Initial Green */
+    opacity: 1;
 }
 
+#bg-layer-2 {
+    background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+    opacity: 0;
+}
+
+/* BUBBLES ANIMATION - Now in Front (z-index: 2) */
+.bubbles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2; /* Changed from -1 to 2 to bring to front */
+    overflow: hidden;
+    pointer-events: none; /* Allows clicking through bubbles */
+}
+
+.bubble {
+    position: absolute;
+    bottom: -50px;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.15);
+    animation: rise 12s infinite ease-in;
+}
+
+/* Small Sizes */
+.bubble:nth-child(1) { width: 8px; height: 8px; left: 10%; animation-duration: 8s; animation-delay: 0s; }
+.bubble:nth-child(2) { width: 5px; height: 5px; left: 20%; animation-duration: 12s; animation-delay: 2s; }
+.bubble:nth-child(3) { width: 10px; height: 10px; left: 35%; animation-duration: 10s; animation-delay: 4s; }
+.bubble:nth-child(4) { width: 6px; height: 6px; left: 50%; animation-duration: 14s; animation-delay: 1s; }
+.bubble:nth-child(5) { width: 7px; height: 7px; left: 55%; animation-duration: 9s; animation-delay: 3s; }
+.bubble:nth-child(6) { width: 12px; height: 12px; left: 70%; animation-duration: 11s; animation-delay: 5s; }
+.bubble:nth-child(7) { width: 4px; height: 4px; left: 80%; animation-duration: 13s; animation-delay: 1.5s; }
+.bubble:nth-child(8) { width: 9px; height: 9px; left: 90%; animation-duration: 10s; animation-delay: 2.5s; }
+.bubble:nth-child(9) { width: 6px; height: 6px; left: 15%; animation-duration: 15s; animation-delay: 6s; }
+.bubble:nth-child(10) { width: 11px; height: 11px; left: 85%; animation-duration: 9s; animation-delay: 0.5s; }
+.bubble:nth-child(11) { width: 5px; height: 5px; left: 5%; animation-duration: 16s; animation-delay: 7s; }
+.bubble:nth-child(12) { width: 8px; height: 8px; left: 25%; animation-duration: 11s; animation-delay: 3.5s; }
+.bubble:nth-child(13) { width: 6px; height: 6px; left: 65%; animation-duration: 14s; animation-delay: 4.5s; }
+.bubble:nth-child(14) { width: 9px; height: 9px; left: 95%; animation-duration: 10s; animation-delay: 1.8s; }
+.bubble:nth-child(15) { width: 6px; height: 6px; left: 15%; animation-duration: 15s; animation-delay: 6s; }
+.bubble:nth-child(16) { width: 11px; height: 11px; left: 85%; animation-duration: 9s; animation-delay: 0.5s; }
+.bubble:nth-child(17) { width: 5px; height: 5px; left: 5%; animation-duration: 16s; animation-delay: 7s; }
+.bubble:nth-child(18) { width: 8px; height: 8px; left: 25%; animation-duration: 11s; animation-delay: 3.5s; }
+.bubble:nth-child(19) { width: 6px; height: 6px; left: 65%; animation-duration: 14s; animation-delay: 4.5s; }
+.bubble:nth-child(20) { width: 9px; height: 9px; left: 95%; animation-duration: 10s; animation-delay: 1.8s; }
+
+@keyframes rise {
+    0% {
+        bottom: -50px;
+        transform: translateX(0) rotate(0deg) scale(1);
+        opacity: 0;
+    }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% {
+        bottom: 110vh;
+        transform: translateX(50px) rotate(360deg) scale(1.1);
+        opacity: 0;
+    }
+}
+
+/* CONTAINER FLOATING ANIMATION */
 .container {
     width: 100%;
     max-width: 900px;
-    background: rgba(16, 185, 129, 0.06);
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(20px);
     border-radius: 24px;
     padding: 40px;
     box-shadow: 
         0 25px 80px rgba(0, 0, 0, 0.5),
-        0 0 60px rgba(16, 185, 129, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    animation: fadeIn 1s ease;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    
+    /* 3D Floating Animation */
+    transform-style: preserve-3d;
+    animation: floatAndSway 6s ease-in-out infinite;
+    position: relative;
+    z-index: 1; /* Container is behind bubbles */
+}
+
+@keyframes floatAndSway {
+    0% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+    25% { transform: translateY(-15px) rotateX(1deg) rotateY(1.5deg); }
+    50% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+    75% { transform: translateY(-10px) rotateX(-1deg) rotateY(-1.5deg); }
+    100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(40px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* PROFILE SECTION STYLES */
@@ -91,11 +164,9 @@ body::before {
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    border: 3px solid rgba(16, 185, 129, 0.6);
+    border: 3px solid rgba(255,255,255,0.6);
     object-fit: cover;
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        0 0 40px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     z-index: 2;
     transition: transform 0.4s ease;
 }
@@ -104,35 +175,30 @@ body::before {
     transform: scale(1.05);
 }
 
-/* --- NEW EFFECT: Rotating Dashed Ring --- */
+/* Rotating Ring Effect */
 .rotating-ring {
     position: absolute;
     width: 185px;
     height: 185px;
     border-radius: 50%;
-    border: 2px dashed rgba(16, 185, 129, 0.6);
+    border: 2px dashed rgba(255, 255, 255, 0.5);
     animation: spin 12s linear infinite;
     z-index: 1;
 }
 
-/* --- NEW EFFECT: Pulsing Sonar Rings --- */
+/* Pulsing Sonar Rings */
 .pulse-ring {
     position: absolute;
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    border: 1px solid rgba(16, 185, 129, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     z-index: 0;
     animation: pulse 3s ease-out infinite;
 }
 
-.pulse-ring:nth-child(2) {
-    animation-delay: 1s;
-}
-
-.pulse-ring:nth-child(3) {
-    animation-delay: 2s;
-}
+.pulse-ring:nth-child(2) { animation-delay: 1s; }
+.pulse-ring:nth-child(3) { animation-delay: 2s; }
 
 @keyframes spin {
     from { transform: rotate(0deg); }
@@ -140,62 +206,15 @@ body::before {
 }
 
 @keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.6;
-        border-width: 2px;
-    }
-    100% {
-        transform: scale(1.5);
-        opacity: 0;
-        border-width: 0px;
-    }
-}
-
-/* Floating particles */
-.particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -2;
-    overflow: hidden;
-}
-
-.particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: rgba(16, 185, 129, 0.4);
-    border-radius: 50%;
-    animation: floatParticle 15s infinite;
-}
-
-.particle:nth-child(1) { left: 10%; animation-delay: 0s; }
-.particle:nth-child(2) { left: 20%; animation-delay: 2s; }
-.particle:nth-child(3) { left: 30%; animation-delay: 4s; }
-.particle:nth-child(4) { left: 40%; animation-delay: 1s; }
-.particle:nth-child(5) { left: 50%; animation-delay: 3s; }
-.particle:nth-child(6) { left: 60%; animation-delay: 5s; }
-.particle:nth-child(7) { left: 70%; animation-delay: 2.5s; }
-.particle:nth-child(8) { left: 80%; animation-delay: 1.5s; }
-.particle:nth-child(9) { left: 90%; animation-delay: 3.5s; }
-.particle:nth-child(10) { left: 5%; animation-delay: 0.5s; }
-
-@keyframes floatParticle {
-    0% { transform: translateY(100vh); opacity: 0; }
-    10% { opacity: 0.6; }
-    90% { opacity: 0.6; }
-    100% { transform: translateY(-100vh); opacity: 0; }
+    0% { transform: scale(1); opacity: 0.6; border-width: 2px; }
+    100% { transform: scale(1.5); opacity: 0; border-width: 0px; }
 }
 
 /* TEXT & GRID STYLES */
 .profile h1 {
     font-size: 28px;
     font-weight: 600;
-    text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
 .profile p {
@@ -211,49 +230,29 @@ body::before {
 }
 
 .card {
-    background: linear-gradient(145deg, rgba(16, 185, 129, 0.1), rgba(34, 197, 94, 0.05));
+    background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 16px;
-    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid rgba(16, 185, 129, 0.15);
-    position: relative;
-    overflow: hidden;
-}
-
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.1), transparent);
-    transition: left 0.5s ease;
-}
-
-.card:hover::before {
-    left: 100%;
+    transition: 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
 }
 
 .card:hover {
-    transform: translateY(-5px) scale(1.02);
-    background: linear-gradient(145deg, rgba(16, 185, 129, 0.18), rgba(34, 197, 94, 0.1));
-    border-color: rgba(16, 185, 129, 0.4);
-    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.15);
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .card h3 {
     margin-bottom: 10px;
     font-size: 18px;
-    color: #10b981;
+    color: #ffffff;
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.card h3 i {
-    width: 20px;
-    text-align: center;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .card p {
@@ -279,78 +278,37 @@ body::before {
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    background: linear-gradient(135deg, #059669, #10b981);
     color: white;
     text-decoration: none;
-    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: 0.3s ease;
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-}
-
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
-}
-
-.btn:hover::before {
-    left: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .btn:hover {
-    background: linear-gradient(135deg, #10b981, #34d399);
-    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
-    transform: translateY(-3px) scale(1.02);
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Specific button colors */
-.btn-youtube {
-    background: linear-gradient(135deg, #dc2626, #ef4444);
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-}
-
-.btn-youtube:hover {
-    background: linear-gradient(135deg, #ef4444, #f87171);
-    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
-}
-
-.btn-facebook {
-    background: linear-gradient(135deg, #2563eb, #3b82f6);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-}
-
-.btn-facebook:hover {
-    background: linear-gradient(135deg, #3b82f6, #60a5fa);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
-}
+.btn i { font-size: 18px; }
+.btn-youtube i { color: #ffccc7; }
+.btn-facebook i { color: #bfdbfe; }
 
 @media(max-width: 700px){
-    .container {
-        padding: 20px;
-    }
-    .profile-container {
-        width: 170px;
-        height: 170px;
-    }
-    .profile-container img {
-        width: 130px;
-        height: 130px;
-    }
-    .buttons {
-        gap: 10px;
-    }
-    .btn {
-        padding: 12px 20px;
-        font-size: 14px;
+    .container { padding: 20px; }
+    .profile-container { width: 170px; height: 170px; }
+    .profile-container img { width: 130px; height: 130px; }
+    .buttons { gap: 10px; }
+    .btn { padding: 12px 20px; font-size: 14px; }
+    @keyframes floatAndSway {
+        0% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+        50% { transform: translateY(-5px) rotateX(0deg) rotateY(0deg); }
+        100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
     }
 }
 </style>
@@ -358,35 +316,28 @@ body::before {
 
 <body>
 
-<!-- Floating Particles -->
-<div class="particles">
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
+<!-- Background Layers for Smooth Transition -->
+<div class="bg-layer" id="bg-layer-1"></div>
+<div class="bg-layer" id="bg-layer-2"></div>
+
+<!-- Floating Bubbles (Now in Front) -->
+<div class="bubbles-container">
+    <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+    <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+    <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+    <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+    <div class="bubble"></div><div class="bubble"></div>
 </div>
 
 <div class="container">
-
     <div class="profile">
         <div class="profile-container">
-            <!-- Sonar Pulse Rings -->
             <div class="pulse-ring"></div>
             <div class="pulse-ring"></div>
             <div class="pulse-ring"></div>
-            
-            <!-- Rotating Dashed Ring -->
             <div class="rotating-ring"></div>
-            
             <img src="image.png" id="profilePhoto" alt="Profile Photo">
         </div>
-
         <h1 id="name">Mijanur Rahman</h1>
         <p>Personal Information</p>
     </div>
@@ -422,17 +373,55 @@ body::before {
         <a href="contact.html" class="btn">
             <i class="fas fa-envelope"></i> Contact
         </a>
-        
         <a href="https://www.youtube.com/@bdqirat" target="_blank" class="btn btn-youtube">
             <i class="fab fa-youtube"></i> YouTube
         </a>
-        
-        <a href="https://www.facebook.com/bdqirat" target="_blank" class="btn btn-facebook">
+        <a href="https://www.facebook.com/" target="_blank" class="btn btn-facebook">
             <i class="fab fa-facebook"></i> Facebook
         </a>
     </div>
-
 </div>
+
+<script>
+    // List of 10 Best Color Gradients
+    const colors = [
+        'linear-gradient(135deg, #0a2f1f 0%, #145a3a 100%)', // 1. Deep Green (Start)
+        'linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%)', // 2. Sunset
+        'linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)', // 3. Midnight Purple
+        'linear-gradient(135deg, #000428 0%, #004e92 100%)', // 4. Deep Blue
+        'linear-gradient(135deg, #1f1c2c 0%, #928dab 100%)', // 5. Ash Violet
+        'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)', // 6. Ocean Blue
+        'linear-gradient(135deg, #200122 0%, #6f0000 100%)', // 7. Dark Red
+        'linear-gradient(135deg, #134e5e 0%, #71b280 100%)', // 8. Fresh Green
+        'linear-gradient(135deg, #373b44 0%, #4286f4 100%)', // 9. Tech Blue
+        'linear-gradient(135deg, #0e1e27 0%, #2d3436 100%)'  // 10. Charcoal
+    ];
+
+    let currentColorIndex = 0;
+    let layer1Visible = true;
+
+    const layer1 = document.getElementById('bg-layer-1');
+    const layer2 = document.getElementById('bg-layer-2');
+
+    function changeColor() {
+        currentColorIndex = (currentColorIndex + 1) % colors.length;
+        const nextColor = colors[currentColorIndex];
+
+        if (layer1Visible) {
+            layer2.style.background = nextColor;
+            layer2.style.opacity = 1;
+            layer1.style.opacity = 0;
+        } else {
+            layer1.style.background = nextColor;
+            layer1.style.opacity = 1;
+            layer2.style.opacity = 0;
+        }
+
+        layer1Visible = !layer1Visible;
+    }
+
+    setInterval(changeColor, 10000);
+</script>
 
 </body>
 </html>
