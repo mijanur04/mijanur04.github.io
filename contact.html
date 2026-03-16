@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mijanur Rahman</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --success-color: #16a34a;
+            --danger-color: #dc2626;
+            --bg-color: #f8fafc;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .container { background: #ffffff; padding: 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 480px; }
+        h2 { text-align: center; color: #1e293b; margin-bottom: 20px; font-weight: 700; }
+        
+        /* Data Items */
+        .data-card { background: #fff; border: 1px solid #e2e8f0; padding: 16px; margin-bottom: 16px; border-radius: 12px; transition: transform 0.2s; }
+        .data-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .data-header { font-weight: 800; color: var(--primary-color); font-size: 15px; margin-bottom: 12px; text-transform: uppercase; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; display: flex; justify-content: center; }
+        
+        .row { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; }
+        .info { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: #334155; max-width: 70%; }
+        .label-tag { font-size: 11px; color: #64748b; display: block; margin-bottom: 2px; }
+        
+        .copy-btn { background: white; color: var(--primary-color); border: 1px solid var(--primary-color); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; min-width: 70px; }
+
+        /* Action Buttons */
+        .bottom-nav { margin-top: 30px; display: flex; gap: 10px; justify-content: center; }
+        .btn { padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 15px; transition: 0.3s; flex: 1; }
+        .btn-add { background: var(--success-color); color: white; }
+        .btn-logout { background: var(--danger-color); color: white; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+        .modal-content { background: white; padding: 25px; border-radius: 16px; width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; }
+        
+        /* Modal Buttons Side-by-Side */
+        .modal-footer { display: flex; gap: 10px; margin-top: 15px; }
+        .save-btn { background: var(--success-color); color: white; margin-top: 0 !important; }
+        .cancel-btn { background: #64748b; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="login-section">
+        <h2>Login Page</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button class="btn btn-add" style="width: 100%;" onclick="login()" id="login-text">Login</button>
+        <p id="err" style="color:red; text-align:center; font-size:13px;"></p>
+    </div>
+
+    <div id="data-section" style="display:none;">
+        <h2>Email/Mobile Number</h2>
+        <div id="data-list"></div>
+        
+        <div class="bottom-nav">
+            <button class="btn btn-add" onclick="openModal()">Add New</button>
+            <button class="btn btn-logout" onclick="location.reload()">Logout</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="addModal">
+    <div class="modal-content">
+        <h3 style="margin-top:0">Add New Item</h3>
+        <input type="text" id="nLabel" placeholder="Account Name (e.g. Facebook)">
+        <input type="text" id="nVal1" placeholder="Email or Name">
+        <input type="text" id="nVal2" placeholder="Password or Number">
+        
+        <div class="modal-footer">
+            <button class="btn save-btn" id="sBtn" onclick="saveData()">Save</button>
+            <button class="btn cancel-btn" onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const scriptUrl = 'https://script.google.com/macros/s/AKfycbzfk0NQ8B228fG8cxfcqQsTdMW3x53iVgcQtb0AHi1wR6jzb0bOop1_dL88U-f1X7LGqg/exec'; 
+    let creds = { user: '', pass: '' };
+
+    async function login() {
+        const btn = document.getElementById('login-text');
+        creds.user = document.getElementById('username').value;
+        creds.pass = document.getElementById('password').value;
+        
+        btn.innerText = "Checking...";
+        try {
+            const res = await fetch(`${scriptUrl}?user=${creds.user}&pass=${creds.pass}`);
+            const data = await res.json();
+            if(data.status === "success") {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('data-section').style.display = 'block';
+                draw(data.data);
+            } else { document.getElementById('err').innerText = "Access Denied!"; }
+        } catch(e) { document.getElementById('err').innerText = "Connection Error!"; }
+        btn.innerText = "Login";
+    }
+
+    function draw(items) {
+        const list = document.getElementById('data-list');
+        list.innerHTML = '';
+        if(items.length === 0) { list.innerHTML = "<p style='text-align:center; color:#999;'>No data found.</p>"; }
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'data-card';
+            div.innerHTML = `
+                <div class="data-header">${item.label}</div>
+                <div class="row">
+                    <div class="info"><span class="label-tag">EMAIL / NAME</span>${item.value1}</div>
+                    <button class="copy-btn" onclick="cp('${item.value1}', this)">Copy</button>
+                </div>
+                <div class="row">
+                    <div class="info"><span class="label-tag">PASS / MOBILE</span>${item.value2}</div>
+                    <button class="copy-btn" onclick="cp('${item.value2}', this)">Copy</button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    function openModal() { document.getElementById('addModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('addModal').style.display = 'none'; }
+
+    async function saveData() {
+        const l = document.getElementById('nLabel').value;
+        const v1 = document.getElementById('nVal1').value;
+        const v2 = document.getElementById('nVal2').value;
+        const sBtn = document.getElementById('sBtn');
+
+        if(!l) { alert("Please enter Account Name"); return; }
+        
+        sBtn.innerText = "Saving...";
+        sBtn.disabled = true;
+        
+        try {
+            // সেভ করার জন্য পোস্ট রিকোয়েস্ট
+            await fetch(scriptUrl, {
+                method: 'POST', mode: 'no-cors',
+                body: JSON.stringify({ ...creds, label: l, value1: v1, value2: v2 })
+            });
+
+            // ইনপুট ফিল্ড ক্লিয়ার করা
+            document.getElementById('nLabel').value = '';
+            document.getElementById('nVal1').value = '';
+            document.getElementById('nVal2').value = '';
+            
+            closeModal();
+            
+            // অটোমেটিক নতুন ডেটা ফেচ করা (পেজ রিফ্রেশ ছাড়া)
+            const res = await fetch(`${scriptUrl}?user=${creds.user}&pass=${creds.pass}`);
+            const data = await res.json();
+            draw(data.data);
+            
+        } catch(e) { alert("Failed to save!"); }
+        
+        sBtn.innerText = "Save";
+        sBtn.disabled = false;
+    }
+
+    function cp(t, b) {
+        navigator.clipboard.writeText(t);
+        const old = b.innerText;
+        b.innerText = "Copied!"; b.style.borderColor = "#16a34a"; b.style.color = "#16a34a";
+        setTimeout(() => { b.innerText = old; b.style.borderColor = "#2563eb"; b.style.color = "#2563eb"; }, 1500);
+    }
+</script>
+</body>
+</html>

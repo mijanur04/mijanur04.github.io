@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mijanur Rahman</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* CSS RESET & BASE STYLES */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0a2f1f 0%, #0d4a32 40%, #145a3a 70%, #1a6b42 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    color: white;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(34, 197, 94, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(5, 150, 105, 0.08) 0%, transparent 70%);
+    animation: ambientMove 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes ambientMove {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-1%, 3%) rotate(-1deg); }
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(16, 185, 129, 0.06);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 
+        0 25px 80px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba(16, 185, 129, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(40px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* PROFILE SECTION STYLES */
+.profile {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-container img {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid rgba(16, 185, 129, 0.6);
+    object-fit: cover;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(16, 185, 129, 0.3);
+    z-index: 2;
+    transition: transform 0.4s ease;
+}
+
+.profile-container img:hover {
+    transform: scale(1.05);
+}
+
+/* --- NEW EFFECT: Rotating Dashed Ring --- */
+.rotating-ring {
+    position: absolute;
+    width: 185px;
+    height: 185px;
+    border-radius: 50%;
+    border: 2px dashed rgba(16, 185, 129, 0.6);
+    animation: spin 12s linear infinite;
+    z-index: 1;
+}
+
+/* --- NEW EFFECT: Pulsing Sonar Rings --- */
+.pulse-ring {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    z-index: 0;
+    animation: pulse 3s ease-out infinite;
+}
+
+.pulse-ring:nth-child(2) {
+    animation-delay: 1s;
+}
+
+.pulse-ring:nth-child(3) {
+    animation-delay: 2s;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+        border-width: 2px;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+        border-width: 0px;
+    }
+}
+
+/* Floating particles */
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -2;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(16, 185, 129, 0.4);
+    border-radius: 50%;
+    animation: floatParticle 15s infinite;
+}
+
+.particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+.particle:nth-child(2) { left: 20%; animation-delay: 2s; }
+.particle:nth-child(3) { left: 30%; animation-delay: 4s; }
+.particle:nth-child(4) { left: 40%; animation-delay: 1s; }
+.particle:nth-child(5) { left: 50%; animation-delay: 3s; }
+.particle:nth-child(6) { left: 60%; animation-delay: 5s; }
+.particle:nth-child(7) { left: 70%; animation-delay: 2.5s; }
+.particle:nth-child(8) { left: 80%; animation-delay: 1.5s; }
+.particle:nth-child(9) { left: 90%; animation-delay: 3.5s; }
+.particle:nth-child(10) { left: 5%; animation-delay: 0.5s; }
+
+@keyframes floatParticle {
+    0% { transform: translateY(100vh); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-100vh); opacity: 0; }
+}
+
+/* TEXT & GRID STYLES */
+.profile h1 {
+    font-size: 28px;
+    font-weight: 600;
+    text-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+}
+
+.profile p {
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.1), rgba(34, 197, 94, 0.05));
+    padding: 20px;
+    border-radius: 16px;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.card:hover::before {
+    left: 100%;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.02);
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.18), rgba(34, 197, 94, 0.1));
+    border-color: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.15);
+}
+
+.card h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #10b981;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card h3 i {
+    width: 20px;
+    text-align: center;
+}
+
+.card p {
+    font-size: 14px;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+/* BUTTONS STYLES */
+.buttons {
+    margin-top: 40px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: white;
+    text-decoration: none;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #10b981, #34d399);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+    transform: translateY(-3px) scale(1.02);
+}
+
+/* Specific button colors */
+.btn-youtube {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.btn-youtube:hover {
+    background: linear-gradient(135deg, #ef4444, #f87171);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+}
+
+.btn-facebook {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-facebook:hover {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+}
+
+@media(max-width: 700px){
+    .container {
+        padding: 20px;
+    }
+    .profile-container {
+        width: 170px;
+        height: 170px;
+    }
+    .profile-container img {
+        width: 130px;
+        height: 130px;
+    }
+    .buttons {
+        gap: 10px;
+    }
+    .btn {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Floating Particles -->
+<div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+
+<div class="container">
+
+    <div class="profile">
+        <div class="profile-container">
+            <!-- Sonar Pulse Rings -->
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            
+            <!-- Rotating Dashed Ring -->
+            <div class="rotating-ring"></div>
+            
+            <img src="image.png" id="profilePhoto" alt="Profile Photo">
+        </div>
+
+        <h1 id="name">Mijanur Rahman</h1>
+        <p>Personal Information</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3><i class="fas fa-id-card"></i>Date of birth </h3>
+            <p id="age">21-May-1998</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-briefcase"></i> Profession</h3>
+            <p id="profession">Web Developer</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-user-graduate"></i> Education</h3>
+            <p id="education">Jsc & Ssc Passed</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-map-marker-alt"></i> Address</h3>
+            <p id="address">Divition: Khulna District: Satkhira Village: Ghona</p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-toolbox"></i> Skills</h3>
+            <p id="skills">HTML, CSS, JavaScript, Youtube Marketing, Facebook Marketing, Graphic Designer, Audio Editing, Video Editing, Website Developer, Android Developer, </p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-id-card"></i> Personal ID</h3>
+            <p id="personalId">Mother Name: Morjina Khanun & Father Name: Keam Uddin Gazi</p>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <a href="contact.html" class="btn">
+            <i class="fas fa-envelope"></i> Contact
+        </a>
+        
+        <a href="https://www.youtube.com/@bdqirat" target="_blank" class="btn btn-youtube">
+            <i class="fab fa-youtube"></i> YouTube
+        </a>
+        
+        <a href="https://www.facebook.com/bdqirat" target="_blank" class="btn btn-facebook">
+            <i class="fab fa-facebook"></i> Facebook
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>
