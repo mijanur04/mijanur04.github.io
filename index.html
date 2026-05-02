@@ -286,9 +286,7 @@
             font-size:14.5px; position:relative;
             user-select:none; word-wrap:break-word; word-break:break-word;
             color:var(--text-color); line-height:1.45;
-            animation:msgPop 0.2s cubic-bezier(0.34,1.56,0.64,1);
         }
-        @keyframes msgPop { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
         .sent {
             background:var(--msg-sent); align-self:flex-end;
             border-radius:12px 12px 3px 12px; box-shadow:var(--card-shadow);
@@ -453,8 +451,8 @@
         <div class="login-particles" id="loginParticles"></div>
         <div class="login-card">
             <div class="login-logo"><i class="fas fa-comment-dots"></i></div>
-            <div class="login-title">Welcome Back</div>
-            <div class="login-subtitle">Enter your 4-digit PIN to continue</div>
+            <div class="login-title"></div>
+            <div class="login-subtitle">Please enter password</div>
             <div class="pin-dots" id="pinDots">
                 <div class="pin-dot"></div><div class="pin-dot"></div>
                 <div class="pin-dot"></div><div class="pin-dot"></div>
@@ -490,7 +488,7 @@
                 <i class="fas fa-pen"></i><span>Change Name</span>
             </div>
             <div class="popup-menu-item" onclick="triggerProfilePicChange()">
-                <i class="fas fa-camera"></i><span>Change Profile Photo</span>
+                <i class="fas fa-camera"></i><span>Change Profile</span>
             </div>
             <div class="popup-menu-item" onclick="toggleDarkMode()">
                 <i class="fas fa-moon" id="darkModeIcon"></i><span id="darkModeText">Dark Mode</span>
@@ -582,17 +580,10 @@
     <div id="toast" class="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════════════
-//  SOUND SYSTEM  — Custom Audio Files
-//  আপনার কাস্টম .mp3 বা .wav ফাইলগুলোর ডিরেক্ট লিংক (URL) নিচে দিন
-// ════════════════════════════════════════════════════════
+var sendAudio = new Audio('send.mp3');
+var receiveAudio = new Audio('receive.mp3');
+var typingAudio = new Audio('typing.mp3');
 
-// এখানে আপনার নিজস্ব অডিও ফাইলের লিংক দিন
-var sendAudio = new Audio('send.mp3'); // Send Sound
-var receiveAudio = new Audio('receive.mp3'); // Receive Sound
-var typingAudio = new Audio('typing.mp3'); // Typing Sound
-
-// ─── Send Sound ───
 function playSendSound() {
     try {
         sendAudio.currentTime = 0;
@@ -600,7 +591,6 @@ function playSendSound() {
     } catch(e) {}
 }
 
-// ─── Receive Sound ───
 function playReceiveSound() {
     try {
         receiveAudio.currentTime = 0;
@@ -608,7 +598,6 @@ function playReceiveSound() {
     } catch(e) {}
 }
 
-// ─── Typing Sound ───
 function playTypingSound() {
     try {
         typingAudio.currentTime = 0;
@@ -616,7 +605,6 @@ function playTypingSound() {
     } catch(e) {}
 }
 
-// ব্রাউজারের অডিও পলিসি আনলক করার জন্য প্রথম ট্যাপে অডিও লোড করা
 function unlockAudio() {
     sendAudio.load();
     receiveAudio.load();
@@ -627,10 +615,6 @@ function unlockAudio() {
 document.addEventListener('click', unlockAudio, { once: true });
 document.addEventListener('touchstart', unlockAudio, { once: true });
 
-
-// ════════════════════════════════════════════════════════
-//  FIREBASE CONFIG
-// ════════════════════════════════════════════════════════
 var firebaseConfig = {
     apiKey: "AIzaSyCvNIRvAT1guqqVG8BnYSw63croMOwxJhM",
     authDomain: "messages-81309.firebaseapp.com",
@@ -667,9 +651,6 @@ if (isDarkMode) document.body.classList.add('dark-mode');
 changeThemeColor(savedThemeColor, false);
 changeChatBgColor(savedChatColor, false);
 
-// ════════════════════════════════════════════════════════
-//  PIN
-// ════════════════════════════════════════════════════════
 function handleKeyPress(val) {
     if (val === 'del') { pinValue = pinValue.slice(0, -1); }
     else if (val !== '' && pinValue.length < 4) { pinValue += val; }
@@ -701,9 +682,6 @@ function checkPin() {
     }
 }
 
-// ════════════════════════════════════════════════════════
-//  APP ENTRY
-// ════════════════════════════════════════════════════════
 function enterApp() {
     if (!myUser) return;
     isLoggedOut = false;
@@ -730,9 +708,6 @@ function setupPushNotifications() {
     messaging.onMessage(function(payload) { console.log('Message received.', payload); });
 }
 
-// ════════════════════════════════════════════════════════
-//  THEME & COLORS
-// ════════════════════════════════════════════════════════
 function toggleDarkMode() {
     isDarkMode = !isDarkMode;
     document.body.classList.toggle('dark-mode', isDarkMode);
@@ -771,19 +746,22 @@ function changeChatBgColor(hex, save) {
     if (save) localStorage.setItem('chatBgCustomColor', hex);
 }
 
-// ════════════════════════════════════════════════════════
-//  UTILITIES
-// ════════════════════════════════════════════════════════
 function getFormattedTime(timestamp) {
     if (!timestamp) return '...';
     return new Date(timestamp).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
 }
 function getDateLabel(timestamp) {
-    var d = new Date(timestamp), now = new Date();
-    var msgDate   = new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();
-    var todayDate = new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+    if (!timestamp) return 'Today'; 
+    var d = new Date(timestamp);
+    if (isNaN(d.getTime())) return 'Today';
+
+    var now = new Date();
+    var msgDate   = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    var todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    
     if (msgDate === todayDate) return 'Today';
     if (msgDate === todayDate - 86400000) return 'Yesterday';
+    
     return d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
 }
 function showToast(t) {
@@ -839,9 +817,6 @@ function openFilePicker(inputId) {
 }
 function clearFilePickerGuard() { suppressAutoLogout = false; clearTimeout(window.filePickerGuard); }
 
-// ════════════════════════════════════════════════════════
-//  PROFILE POPUP
-// ════════════════════════════════════════════════════════
 function openProfilePopup() {
     document.getElementById('popupAvatar').src = profiles[myUser] || 'https://www.w3schools.com/howto/img_avatar.png';
     document.getElementById('popupUserName').textContent  = getDisplayName(myUser);
@@ -890,9 +865,6 @@ function removeSkeleton() {
     document.querySelectorAll('.skeleton-msg').forEach(function(el) { el.remove(); });
 }
 
-// ════════════════════════════════════════════════════════
-//  FIREBASE LISTENERS
-// ════════════════════════════════════════════════════════
 function setupFirebaseListeners() {
     chatsRef = db.ref('chats'); statusRef = db.ref('status');
     typingRef = db.ref('typing'); connectedRef = db.ref('.info/connected'); namesRef = db.ref('displayNames');
@@ -913,7 +885,6 @@ function setupFirebaseListeners() {
         }
     });
 
-    // TYPING — শুধু নতুন typing শুরু হলে সাউন্ড
     typingRef.child(partner).on('value', function(snap) {
         var isTyping = snap.val() === true;
         var el  = document.getElementById('partnerStatusText');
@@ -922,7 +893,7 @@ function setupFirebaseListeners() {
 
         if (isTyping) {
             ind.style.display = 'flex';
-            if (!partnerWasTyping) { playTypingSound(); } // শুধু প্রথমবার
+            if (!partnerWasTyping) { playTypingSound(); }
         } else {
             ind.style.display = 'none';
             statusRef.child(partner).once('value').then(function(s) {
@@ -946,7 +917,6 @@ function setupFirebaseListeners() {
         var data = snap.val();
         var serverMsgs = data ? Object.values(data).sort(function(a,b){ return a.timestamp - b.timestamp; }) : [];
 
-        // RECEIVE SOUND — শুধু নতুন মেসেজ এবং শুধু partner-এর মেসেজে
         if (!isInitialLoad && serverMsgs.length > 0) {
             var currentLast = serverMsgs[serverMsgs.length - 1];
             if (currentLast.timestamp > lastTimestamp) {
@@ -957,7 +927,6 @@ function setupFirebaseListeners() {
             lastTimestamp = serverMsgs[serverMsgs.length - 1].timestamp;
         }
 
-        // Mark as read
         var unreadUpdates = {};
         for (var i = 0; i < serverMsgs.length; i++) {
             if (serverMsgs[i].sender !== myUser && !serverMsgs[i].read) {
@@ -972,7 +941,6 @@ function setupFirebaseListeners() {
     });
 }
 
-// Typing event
 document.getElementById('msgInput').addEventListener('input', function() {
     if (myUser) {
         typingRef.child(myUser).set(true);
@@ -981,9 +949,6 @@ document.getElementById('msgInput').addEventListener('input', function() {
     }
 });
 
-// ════════════════════════════════════════════════════════
-//  RENDER MESSAGES
-// ════════════════════════════════════════════════════════
 function renderMessages() {
     var container = document.getElementById('messages');
     var isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 160;
@@ -1058,14 +1023,11 @@ function zoomImg(url) {
 }
 function closeZoom() { document.getElementById('zoomViewer').style.display = 'none'; }
 
-// ════════════════════════════════════════════════════════
-//  SEND TEXT
-// ════════════════════════════════════════════════════════
 function sendText() {
     var input = document.getElementById('msgInput');
     var text = input.value.trim();
     if (!text) return;
-    playSendSound(); // send সাউন্ড
+    playSendSound();
     input.value = '';
     var msgId = Date.now().toString();
     var msg = { id:msgId, sender:myUser, text:text, type:'text', timestamp:firebase.database.ServerValue.TIMESTAMP, read:false };
@@ -1073,9 +1035,6 @@ function sendText() {
     db.ref('chats/' + msgId).set(msg);
 }
 
-// ════════════════════════════════════════════════════════
-//  FILE HANDLING
-// ════════════════════════════════════════════════════════
 function handleFile(e) {
     var f = e.target.files[0]; if (!f) { clearFilePickerGuard(); return; }
     e.target.value = ''; clearFilePickerGuard();
@@ -1160,9 +1119,6 @@ function deleteMsg(id) {
     db.ref('chats/' + id).remove();
 }
 
-// ════════════════════════════════════════════════════════
-//  LOGOUT
-// ════════════════════════════════════════════════════════
 function logout() {
     document.getElementById('profilePopupOverlay').classList.remove('active');
     document.getElementById('nameChangeOverlay').classList.remove('active');
@@ -1189,11 +1145,9 @@ function closeAllMenus() {
     document.querySelectorAll('.action-menu').forEach(function(m) { m.style.display = 'none'; });
 }
 
-// ─── Events ───
 document.getElementById('msgInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') sendText(); });
 document.getElementById('nameChangeInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') saveNameChange(); });
 
-// ─── Particles ───
 (function() {
     var c = document.getElementById('loginParticles');
     for (var i = 0; i < 28; i++) {
@@ -1207,7 +1161,6 @@ document.getElementById('nameChangeInput').addEventListener('keypress', function
     }
 })();
 
-// ─── Auto-logout ───
 document.addEventListener('visibilitychange', function() {
     if (document.hidden && !isLoggedOut && myUser && !suppressAutoLogout) { isLoggedOut = true; logout(); }
 });
@@ -1218,7 +1171,6 @@ var msgC = document.getElementById('messages');
 msgC.addEventListener('touchmove', endPress, { passive:true });
 msgC.addEventListener('scroll', endPress, { passive:true });
 
-// ─── Boot — auto login ───
 window.onload = function() {
     try {
         var saved = localStorage.getItem('chatActiveUser');
